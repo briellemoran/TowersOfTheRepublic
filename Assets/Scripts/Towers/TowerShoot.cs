@@ -1,58 +1,108 @@
 using UnityEngine;
-using System.Collections;
 
 public class TowerShoot : MonoBehaviour
 {
+    [Header("Stats")]
     public float damage = 25f;
-    public float range = 4f;
+    public float range = 8f;
     public float fireRate = 1.2f;
 
+    [Header("References")]
     public GameObject bulletPrefab;
     public Transform firePoint;
+    public Transform towerHead;
     public LayerMask enemyLayer;
 
     private EnemyHealth target;
-    private bool isFiring = false;
+    private float fireTimer;
 
     void Start()
     {
-        InvokeRepeating(nameof(FindTarget), 0f, 0.5f);
+        // Look for targets twice a second
+        InvokeRepeating("FindTarget", 0f, 0.5f);
+    }
+
+    void Update()
+    {
+        // If we have a target and it's alive
+        if (target != null && target.gameObject.activeInHierarchy == true)
+        {
+            float dist = Vector3.Distance(transform.position, target.transform.position);
+            
+            // If target is in range
+            if (dist <= range)
+            {
+                RotateTowardTarget();
+
+                // Handle Shooting timer
+                fireTimer = fireTimer + Time.deltaTime;
+                if (fireTimer >= 1f / fireRate)
+                {
+                    Shoot();
+                    fireTimer = 0f;
+                }
+            }
+            else
+            {
+                // Target walked away
+                target = null;
+            }
+        }
     }
 
     void FindTarget()
     {
+        // Find all enemies in range
         Collider[] hits = Physics.OverlapSphere(transform.position, range, enemyLayer);
-
+        
         target = null;
-        float bestDist = float.MaxValue;
+        float shortestDistance = 1000f; // Very large number
 
-        foreach (Collider c in hits)
+        for (int i = 0; i < hits.Length; i++)
         {
-            EnemyHealth e = c.GetComponent<EnemyHealth>();
-            if (e == null) continue;
-            float d = Vector3.Distance(transform.position, e.transform.position);
-            if (d < bestDist) { bestDist = d; target = e; }
-        }
+            EnemyHealth enemy = hits[i].GetComponent<EnemyHealth>();
+            if (enemy == null) continue;
 
-        if (target != null && !isFiring)
-            StartCoroutine(FireLoop());
+            float dist = Vector3.Distance(transform.position, enemy.transform.position);
+            if (dist < shortestDistance)
+            {
+                shortestDistance = dist;
+                target = enemy;
+            }
+        }
     }
 
-    IEnumerator FireLoop()
+    void RotateTowardTarget()
     {
-        isFiring = true;
-        while (target != null && target.gameObject.activeInHierarchy)
+        if (towerHead == null) return;
+
+        // Look at the target's position
+        Vector3 direction = target.transform.position - towerHead.position;
+        direction.y = 0; // Keep the head level on the ground
+        
+        if (direction != Vector3.zero)
         {
-            Shoot();
-            yield return new WaitForSeconds(1f / fireRate);
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            // Smoothly rotate toward the target
+            towerHead.rotation = Quaternion.Lerp(towerHead.rotation, lookRotation, Time.deltaTime * 10f);
         }
-        isFiring = false;
     }
 
     void Shoot()
     {
         if (bulletPrefab == null || firePoint == null) return;
-        GameObject b = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-        b.GetComponent<Bullet>().Init(target, damage);
+
+        // Create the bullet
+        GameObject newBullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        
+        // Try to initialize it based on what script it has
+        StandardBullet std = newBullet.GetComponent<StandardBullet>();
+        if (std != null) std.Init(target, damage);
+
+        AoEBullet aoe = newBullet.GetComponent<AoEBullet>();
+        if (aoe != null) aoe.Init(target, damage);
+
+        JediBullet jedi = newBullet.GetComponent<JediBullet>();
+        if (jedi != null) jedi.Init(target, damage);
     }
 }

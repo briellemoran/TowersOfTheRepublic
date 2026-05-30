@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class StandardBullet : MonoBehaviour
 {
     private EnemyHealth target;
     private float damage;
@@ -14,18 +14,21 @@ public class Bullet : MonoBehaviour
 
     void Update()
     {
-        if (target == null || !target.gameObject.activeInHierarchy)
+        // If target is gone, destroy the bullet
+        if (target == null || target.gameObject.activeInHierarchy == false)
         {
             Destroy(gameObject);
             return;
         }
 
+        // Move the bullet towards the target
         transform.position = Vector3.MoveTowards(
             transform.position,
             target.transform.position,
             speed * Time.deltaTime
         );
 
+        // Check if we reached the target
         if (Vector3.Distance(transform.position, target.transform.position) < 0.2f)
         {
             target.TakeDamage(damage);

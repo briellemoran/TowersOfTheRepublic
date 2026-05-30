@@ -48,6 +48,10 @@ public class EnemyPathFollower : MonoBehaviour
     {
         GameManager.Instance.LoseLives(livesLost);
         EnemyManager.Instance.RemoveEnemy(GetComponent<EnemyHealth>());
+        if (WaveManager.Instance != null)
+        {
+            WaveManager.Instance.OnEnemyRemoved();
+        }
         gameObject.SetActive(false);
     }
  
