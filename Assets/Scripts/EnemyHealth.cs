@@ -41,11 +41,7 @@ public class EnemyHealth : MonoBehaviour
     {
         GameManager.Instance.AddGold(goldReward);
         EnemyManager.Instance.RemoveEnemy(this);
-        if (WaveManager.Instance != null)
-        {
-            WaveManager.Instance.OnEnemyRemoved();
-        }
-        // TODO: play death particle here
-        gameObject.SetActive(false); // return to pool
+        WaveManager.Instance.OnEnemyRemoved();
+        gameObject.SetActive(false);
     }
 }
