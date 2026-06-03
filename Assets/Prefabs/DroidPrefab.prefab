@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.73147297, g: 1, b: 0.7311321, a: 0.6313726}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -352,7 +352,8 @@ MonoBehaviour:
   maxHP: 60
   goldReward: 10
   isImmune: 0
-  healthBarSlider: {fileID: 0}
+  deathSFX: {fileID: 8300000, guid: bbff3adab168b4e3f9957da7a3ce9cb5, type: 3}
+  healthBarSlider: {fileID: 7813250012989733457}
 --- !u!114 &8480089811595018019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -365,6 +366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8829182af5d64bc1beec3bd887503bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPathFollower
+  baseSFX: {fileID: 8300000, guid: bf19cebee93464238bd2e6d36bfaac99, type: 3}
   speed: 3.5
   livesLost: 1
   waypointIndex: 0

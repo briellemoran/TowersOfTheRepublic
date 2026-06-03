@@ -157,11 +157,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 281aac6dd14ec1848b44274a5af91e09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TowerShoot
+  shootSFX: {fileID: 8300000, guid: 5caa88ba832354bf3838cda9b1bbed9f, type: 3}
   damage: 25
   range: 50
   fireRate: 1.2
   bulletPrefab: {fileID: 9026327696113804393, guid: ba207efee2bb00546bc57b6f7f77ae3d, type: 3}
   firePoint: {fileID: 8391783153302231132}
+  towerHead: {fileID: 0}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64

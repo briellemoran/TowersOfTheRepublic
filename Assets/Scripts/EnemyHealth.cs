@@ -6,6 +6,9 @@ public class EnemyHealth : MonoBehaviour
     public float maxHP = 60f;
     public int goldReward = 10;
     public bool isImmune = false;
+    public AudioClip deathSFX;
+    
+    private AudioSource audioSource;
 
     [Header("UI")]
     public Slider healthBarSlider;
@@ -39,6 +42,7 @@ public class EnemyHealth : MonoBehaviour
     
     void Die()
     {
+        AudioSource.PlayClipAtPoint(deathSFX, transform.position);
         GameManager.Instance.AddGold(goldReward);
         EnemyManager.Instance.RemoveEnemy(this);
         WaveManager.Instance.OnEnemyRemoved();

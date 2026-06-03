@@ -1,6 +1,7 @@
 using UnityEngine;
 public class EnemyPathFollower : MonoBehaviour
 {
+    public AudioClip baseSFX;
     public float speed = 3.5f;
     public int livesLost = 1;
     public int waypointIndex = 0;
@@ -46,6 +47,7 @@ public class EnemyPathFollower : MonoBehaviour
 
     void ReachedBase()
     {
+        AudioSource.PlayClipAtPoint(baseSFX, transform.position);
         GameManager.Instance.LoseLives(livesLost);
         EnemyManager.Instance.RemoveEnemy(GetComponent<EnemyHealth>());
         

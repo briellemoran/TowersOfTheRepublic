@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class TowerShoot : MonoBehaviour
 {
+    public AudioClip shootSFX;
+
     [Header("Stats")]
     public float damage = 25f;
     public float range = 8f;
@@ -90,6 +92,10 @@ public class TowerShoot : MonoBehaviour
 
     void Shoot()
     {
+        if(shootSFX){
+            AudioSource.PlayClipAtPoint(shootSFX, transform.position);
+        }
+
         if (bulletPrefab == null || firePoint == null) return;
 
         // Create the bullet
