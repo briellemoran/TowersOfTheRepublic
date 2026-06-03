@@ -48,11 +48,13 @@ public class EnemyPathFollower : MonoBehaviour
     {
         GameManager.Instance.LoseLives(livesLost);
         EnemyManager.Instance.RemoveEnemy(GetComponent<EnemyHealth>());
+        
         if (WaveManager.Instance != null)
         {
             WaveManager.Instance.OnEnemyRemoved();
         }
-        gameObject.SetActive(false);
+        
+        Destroy(gameObject, 2f); // delay 2 seconds so it can show it walking into the tunnel
     }
  
     public void ResetPath()
