@@ -353,6 +353,7 @@ MonoBehaviour:
   goldReward: 10
   isImmune: 0
   deathSFX: {fileID: 8300000, guid: bbff3adab168b4e3f9957da7a3ce9cb5, type: 3}
+  deathParticle: {fileID: 4148590206753136201, guid: 0f88c7eb909234b63a082386ea933fc1, type: 3}
   healthBarSlider: {fileID: 7813250012989733457}
 --- !u!114 &8480089811595018019
 MonoBehaviour:

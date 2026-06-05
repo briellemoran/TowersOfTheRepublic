@@ -11,6 +11,7 @@ public class TowerPlacer : MonoBehaviour
     public LayerMask buildZoneLayer;
     public Material ghostValidMaterial;
     public Material ghostInvalidMaterial;
+    public GameObject placementParticle;
 
     [Header("Current Selection")]
     public TowerData selectedData;
@@ -164,6 +165,12 @@ public class TowerPlacer : MonoBehaviour
             {
                 Vector3 spawnPos = currentBuildZone.transform.position;
                 Instantiate(selectedData.towerPrefab, spawnPos, Quaternion.identity);
+
+                if (placementParticle != null) // particle effect for placing tower
+                {
+                    Instantiate(placementParticle, spawnPos, Quaternion.identity);
+                }
+
                 currentBuildZone.isOccupied = true;
                 
                 Debug.Log("[Placer]: Placed " + selectedData.towerName + " on " + currentBuildZone.name);

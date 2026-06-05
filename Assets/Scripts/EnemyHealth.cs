@@ -7,6 +7,7 @@ public class EnemyHealth : MonoBehaviour
     public int goldReward = 10;
     public bool isImmune = false;
     public AudioClip deathSFX;
+    public GameObject deathParticle;
     
     private AudioSource audioSource;
 
@@ -42,6 +43,8 @@ public class EnemyHealth : MonoBehaviour
     
     void Die()
     {
+        Instantiate(deathParticle, transform.position, transform.rotation);
+        
         AudioSource.PlayClipAtPoint(deathSFX, transform.position);
         GameManager.Instance.AddGold(goldReward);
         EnemyManager.Instance.RemoveEnemy(this);
