@@ -149,9 +149,29 @@ public class TowerPlacer : MonoBehaviour
     void TryPlaceTower()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 500f, terrainLayer | buildZoneLayer))
+        // Only cast against BuildZoneLayer for actual placement to ensure accuracy
+        if (Physics.Raycast(ray, out RaycastHit hit, 500f, buildZoneLayer))
         {
-            TryPlaceAt(hit.point);
+            TileBehavior tile = hit.collider.GetComponent<TileBehavior>();
+            if (tile != null && !tile.tileOccupied)
+            {
+                if (GameManager.Instance.SpendGold(selectedData.cost))
+                {
+                    tile.PlaceTower(selectedData.towerPrefab);
+                    
+                    if (placementParticle != null)
+                    {
+                        Instantiate(placementParticle, hit.collider.transform.parent.position, Quaternion.identity);
+                    }
+                    
+                    Debug.Log("[Placer]: Placed on: " + hit.collider.name);
+                    CancelPlacement();
+                }
+                else
+                {
+                    Debug.Log("[Placer]: Not enough gold!");
+                }
+            }
         }
     }
 
@@ -164,9 +184,12 @@ public class TowerPlacer : MonoBehaviour
             if (GameManager.Instance.SpendGold(selectedData.cost))
             {
                 Vector3 spawnPos = currentBuildZone.transform.position;
-                Instantiate(selectedData.towerPrefab, spawnPos, Quaternion.identity);
+                GameObject tower = Instantiate(selectedData.towerPrefab, spawnPos, Quaternion.identity);
 
-                if (placementParticle != null) // particle effect for placing tower
+                // Face the road logic (duplicate for fallback)
+                FaceNearestPath(tower);
+
+                if (placementParticle != null) 
                 {
                     Instantiate(placementParticle, spawnPos, Quaternion.identity);
                 }
@@ -179,6 +202,36 @@ public class TowerPlacer : MonoBehaviour
             else
             {
                 Debug.Log("[Placer] failed: Not enough gold.");
+            }
+        }
+    }
+
+    void FaceNearestPath(GameObject tower)
+    {
+        int pathLayerMask = LayerMask.GetMask("Path");
+        Collider[] pathHits = Physics.OverlapSphere(tower.transform.position, 10f, pathLayerMask);
+        
+        Vector3 closestPoint = Vector3.zero;
+        float minDist = Mathf.Infinity;
+
+        foreach (var hit in pathHits)
+        {
+            Vector3 point = hit.ClosestPoint(tower.transform.position);
+            float dist = Vector3.Distance(tower.transform.position, point);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                closestPoint = point;
+            }
+        }
+
+        if (minDist < Mathf.Infinity)
+        {
+            Vector3 direction = closestPoint - tower.transform.position;
+            direction.y = 0;
+            if (direction != Vector3.zero)
+            {
+                tower.transform.rotation = Quaternion.LookRotation(direction);
             }
         }
     }

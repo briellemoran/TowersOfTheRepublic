@@ -6,6 +6,7 @@ public class TowerShopButton : MonoBehaviour
 {
     public TowerData towerData;
     public TMP_Text costLabel;
+    public TMP_Text nameLabel;
 
     void Start()
     {
@@ -22,6 +23,10 @@ public class TowerShopButton : MonoBehaviour
             if (costLabel != null)
             {
                 costLabel.text = towerData.cost.ToString();
+            }
+            if (nameLabel != null)
+            {
+                nameLabel.text = towerData.towerName;
             }
         }
 

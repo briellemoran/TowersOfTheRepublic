@@ -4,44 +4,73 @@ using System.Collections.Generic;
 
 public class ARCTrooperTower : MonoBehaviour
 {
-    public GameObject soldierPrefab;
-    public int soldierCount = 2;
-    public float respawnTime = 8f;
+    [Header("Spawn Settings")]
+    public GameObject officerPrefab;
+    public GameObject trooperPrefab;
+    public int officerCount = 1;
+    public int trooperCount = 2;
+    public float respawnTime = 10f;
 
     private List<GameObject> activeSoldiers = new List<GameObject>();
 
     void Start()
     {
-        for (int i = 0; i < soldierCount; i++)
+        for (int i = 0; i < officerCount; i++)
         {
-            SpawnSoldier();
+            SpawnSoldier(officerPrefab);
+        }
+        for (int i = 0; i < trooperCount; i++)
+        {
+            SpawnSoldier(trooperPrefab);
         }
     }
 
-    void SpawnSoldier()
+    void OnDestroy()
     {
+        foreach (var soldier in activeSoldiers)
+        {
+            if (soldier != null)
+            {
+                Destroy(soldier);
+            }
+        }
+        activeSoldiers.Clear();
+    }
+
+    void SpawnSoldier(GameObject prefab)
+    {
+        if (prefab == null) return;
+
         Vector3 spawnPos = transform.position + Random.insideUnitSphere * 1.5f;
         spawnPos.y = transform.position.y;
 
-        GameObject soldier = Instantiate(soldierPrefab, spawnPos, Quaternion.identity);
+        GameObject soldier = Instantiate(prefab, spawnPos, Quaternion.identity);
         ARCSoldier script = soldier.GetComponent<ARCSoldier>();
         if (script != null)
         {
-            script.Initialize(transform.position);
+            script.Initialize(this, transform.position);
+            // We can store the prefab on the script if we need to respawn the exact type
+            // For now, let's assume we can just check what type it was
         }
-        activeSoldiers.Add(soldier);
+activeSoldiers.Add(soldier);
     }
 
-    // This would be called if we implement soldier health
     public void SoldierDied(GameObject soldier)
     {
+        GameObject prefabToRespawn = trooperPrefab;
+        // Check if it was an officer
+        if (soldier.name.Contains("Officer"))
+        {
+            prefabToRespawn = officerPrefab;
+        }
+
         activeSoldiers.Remove(soldier);
-        StartCoroutine(RespawnRoutine());
+        StartCoroutine(RespawnRoutine(prefabToRespawn));
     }
 
-    IEnumerator RespawnRoutine()
+    IEnumerator RespawnRoutine(GameObject prefab)
     {
         yield return new WaitForSeconds(respawnTime);
-        SpawnSoldier();
+        SpawnSoldier(prefab);
     }
 }

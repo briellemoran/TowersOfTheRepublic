@@ -1,0 +1,23 @@
+{
+    "asset": "47859043029d7574889962b6ff77c9f8",
+    "fileName": "019e9a6b-f79c-7071-8142-242f162b6a22.glb",
+    "prompt": "Star Wars DC-15S blaster carbine, sci-fi rifle, black metallic, low poly game asset",
+    "negativePrompt": "",
+    "model": "model3d-tripo-p1",
+    "modelName": "Tripo P1",
+    "customSeed": -1,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "refinementMode": "Generation",
+    "promptImageReferenceGuid": "91f5b0a883ae0994b803beec635c6e40",
+    "modelReferenceGuid": "",
+    "multiviewFrontGuid": "",
+    "multiviewBackGuid": "",
+    "multiviewLeftGuid": "",
+    "multiviewRightGuid": "",
+    "multiviewTopGuid": "",
+    "multiviewBottomGuid": "",
+    "multiviewLeftFrontGuid": "",
+    "multiviewRightFrontGuid": "",
+    "faceLimit": -1
+}

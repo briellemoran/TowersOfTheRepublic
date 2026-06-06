@@ -4,7 +4,6 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     
-    // Events — UIManager subscribes to these
     public static event Action<int> OnGoldChanged;
     public static event Action<int> OnLivesChanged;
     public static event Action OnGameOver;

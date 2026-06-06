@@ -1,0 +1,12 @@
+{
+    "asset": "fc7330745b432e84e80f574a3245139c",
+    "fileName": "019e9a61-f906-70f3-91c2-5f3593ac3459.fbx",
+    "prompt": "a person sitting down in a pilot seat, legs bent and hands forward on controls",
+    "negativePrompt": "",
+    "model": "uthana-text-to-motion",
+    "modelName": "Uthana Text to Motion",
+    "customSeed": 605581481,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "isTrimmed": false
+}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2833078763995009334}
   - component: {fileID: 1842002702408895758}
   - component: {fileID: 9217717509940477526}
-  - component: {fileID: 4770054260304681574}
+  - component: {fileID: 841381043451600187}
   m_Layer: 0
   m_Name: StandardBullet
   m_TagString: Untagged
@@ -113,7 +113,7 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4770054260304681574
+--- !u!114 &841381043451600187
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,7 +122,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4341482047189991829}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78b9b006ff48c3d42873614fe168cb26, type: 3}
+  m_Script: {fileID: 11500000, guid: aafe33d2f8aa1a748b0ab68481124650, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Bullet
+  m_EditorClassIdentifier: Assembly-CSharp::StandardBullet
   speed: 12

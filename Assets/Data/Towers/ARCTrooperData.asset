@@ -18,5 +18,5 @@ MonoBehaviour:
   range: 3
   fireRate: 1
   towerPrefab: {fileID: 1021615094052361813, guid: 2b307c7270072e04aa75db167d266d57, type: 3}
-  ghostPrefab: {fileID: 1021615094052361813, guid: 2b307c7270072e04aa75db167d266d57, type: 3}
+  ghostPrefab: {fileID: 9203112407416459718, guid: c759842ab6a36d341a8cf84e562680f8, type: 3}
   shopIcon: {fileID: 0}

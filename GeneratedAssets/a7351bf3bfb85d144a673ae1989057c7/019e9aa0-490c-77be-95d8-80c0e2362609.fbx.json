@@ -1,0 +1,12 @@
+{
+    "asset": "a7351bf3bfb85d144a673ae1989057c7",
+    "fileName": "019e9aa0-490c-77be-95d8-80c0e2362609.fbx",
+    "prompt": "a humanoid standing still in a relaxed combat idle pose, holding a blaster with both hands in front of them",
+    "negativePrompt": "",
+    "model": "uthana-text-to-motion",
+    "modelName": "Uthana Text to Motion",
+    "customSeed": 2098533806,
+    "w3CTraceId": "",
+    "feedback": 0,
+    "isTrimmed": false
+}

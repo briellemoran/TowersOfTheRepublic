@@ -17,19 +17,56 @@ public class ARCSoldier : MonoBehaviour
 
     private NavMeshAgent agent;
     private Vector3 anchorPoint;
-    private float patrolRadius = 2.5f;
+    private float patrolRadius = 4f;
     private EnemyHealth target;
     private float attackTimer;
     private float patrolTimer;
+    private ARCTrooperTower tower;
 
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
     }
 
-    public void Initialize(Vector3 towerPos)
+    public void Initialize(ARCTrooperTower sourceTower, Vector3 towerPos)
     {
-        anchorPoint = towerPos;
+        this.tower = sourceTower;
+        // Find the nearest point on the road (Path layer)
+int pathLayerMask = LayerMask.GetMask("Path");
+        Collider[] pathColliders = Physics.OverlapSphere(towerPos, 20f, pathLayerMask);
+        
+        Vector3 nearestPoint = towerPos;
+        float minDistance = float.MaxValue;
+        bool foundPath = false;
+
+        foreach (var col in pathColliders)
+        {
+            Vector3 closestPoint = col.ClosestPoint(towerPos);
+            float dist = Vector3.Distance(towerPos, closestPoint);
+            if (dist < minDistance)
+            {
+                minDistance = dist;
+                nearestPoint = closestPoint;
+                foundPath = true;
+            }
+        }
+
+        if (foundPath)
+        {
+            anchorPoint = nearestPoint;
+            Debug.Log("[ARCSoldier] Found nearest path point at " + anchorPoint);
+        }
+        else
+        {
+            anchorPoint = towerPos;
+            Debug.LogWarning("[ARCSoldier] No path found within 20 units. Using tower position as anchor.");
+        }
+        
+        // Ensure they start by moving to the anchor point
+        if (agent != null && agent.isOnNavMesh)
+        {
+            agent.SetDestination(anchorPoint);
+        }
     }
 
     void Update()
@@ -125,7 +162,10 @@ public class ARCSoldier : MonoBehaviour
 
     public void OnDeath()
     {
-        // Simple death handling
-        gameObject.SetActive(false);
+        if (tower != null)
+        {
+            tower.SoldierDied(gameObject);
+        }
+        Destroy(gameObject);
     }
 }

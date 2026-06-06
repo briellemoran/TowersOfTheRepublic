@@ -107,8 +107,5 @@ public class TowerShoot : MonoBehaviour
 
         AoEBullet aoe = newBullet.GetComponent<AoEBullet>();
         if (aoe != null) aoe.Init(target, damage);
-
-        JediBullet jedi = newBullet.GetComponent<JediBullet>();
-        if (jedi != null) jedi.Init(target, damage);
     }
 }

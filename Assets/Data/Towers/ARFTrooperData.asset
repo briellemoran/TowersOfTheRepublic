@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: ARFTrooperData
   m_EditorClassIdentifier: Assembly-CSharp::TowerData
   towerName: ARF Sniper
-  cost: 50
+  cost: 200
   damage: 25
   range: 8
   fireRate: 1.2
   towerPrefab: {fileID: 4594384767205506807, guid: a62c1a977afa44842a47fe21a4e27b0e, type: 3}
-  ghostPrefab: {fileID: 4594384767205506807, guid: a62c1a977afa44842a47fe21a4e27b0e, type: 3}
+  ghostPrefab: {fileID: 4594384767205506807, guid: 5440cb09a9f288944ab60522efdfb0a4, type: 3}
   shopIcon: {fileID: 0}
