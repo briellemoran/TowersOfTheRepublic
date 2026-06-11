@@ -53,7 +53,6 @@ public class EnemyAttack : MonoBehaviour
             }
             else if (dist <= detectionRange)
             {
-
                 if (pathFollower != null && !pathFollower.enabled) pathFollower.enabled = true;
             }
             else

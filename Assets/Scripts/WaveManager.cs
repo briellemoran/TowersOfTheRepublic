@@ -25,8 +25,24 @@ public class WaveManager : MonoBehaviour
         Instance = this;
     }
 
-    public void StartNextWave()
+    void Update()
     {
+        // Fallback: if waveActive is true but no enemies are left and we're not spawning, reset.
+        if (waveActive && !isSpawning && EnemyManager.Instance.ActiveCount() == 0)
+        {
+            waveActive = false;
+            if (OnWaveComplete != null) OnWaveComplete();
+            
+            if (currentWave >= waves.Length)
+            {
+                if (OnAllWavesComplete != null) OnAllWavesComplete();
+                GameManager.Instance.TriggerWin();
+            }
+        }
+    }
+
+    public void StartNextWave()
+{
         if (waveActive == true) return;
 
         if (currentWave >= waves.Length)
@@ -59,22 +75,49 @@ public class WaveManager : MonoBehaviour
         for (int j = 0; j < wave.entries.Count; j++)
         {
             WaveData.WaveEntry entry = wave.entries[j];
+            Debug.Log($"[WaveManager] Spawning entry {j}: {entry.count} enemies");
+            
             for (int k = 0; k < entry.count; k++)
             {
-                Instantiate(entry.enemyPrefab, spawnPoint.position, spawnPoint.rotation);
+                if (spawnPoint == null)
+                {
+                    Debug.LogError("[WaveManager] SpawnPoint is missing!");
+                    break;
+                }
+
+                if (EnemyPool.Instance != null)
+                {
+                    EnemyPool.Instance.Get(spawnPoint.position);
+                }
+                else
+                {
+                    Debug.LogWarning("[WaveManager] EnemyPool.Instance is null, falling back to Instantiate.");
+                    if (entry.enemyPrefab != null)
+                    {
+                        GameObject enemy = Instantiate(entry.enemyPrefab, spawnPoint.position, spawnPoint.rotation);
+                        // Manually add to manager if not using pool
+                        EnemyHealth eh = enemy.GetComponent<EnemyHealth>();
+                        if (eh != null && EnemyManager.Instance != null)
+                        {
+                            EnemyManager.Instance.AddEnemy(eh);
+                        }
+                    }
+                }
                 yield return new WaitForSeconds(entry.spawnInterval);
             }
         }
 
         isSpawning = false;
+        Debug.Log("[WaveManager] Spawning complete.");
     }
 
     public void OnEnemyRemoved()
     {
-        enemiesRemainingInWave = enemiesRemainingInWave - 1;
+        enemiesRemainingInWave = Mathf.Max(0, enemiesRemainingInWave - 1);
+        Debug.Log("Enemy Removed. Enemies remaining in wave: " + enemiesRemainingInWave);
 
         if (enemiesRemainingInWave <= 0 && isSpawning == false)
-        {
+{
             waveActive = false;
             
             // Fire UI event

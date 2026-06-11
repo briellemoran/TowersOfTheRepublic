@@ -165,9 +165,10 @@ public class TowerPlacer : MonoBehaviour
                     }
                     
                     Debug.Log("[Placer]: Placed on: " + hit.collider.name);
-                    CancelPlacement();
+                    // Persistent selection: Do NOT call CancelPlacement() here.
+                    // User must Right-Click or press Escape to cancel.
                 }
-                else
+else
                 {
                     Debug.Log("[Placer]: Not enough gold!");
                 }

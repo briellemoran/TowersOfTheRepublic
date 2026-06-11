@@ -8,22 +8,40 @@ public class EnemyPathFollower : MonoBehaviour
     
     private Transform[] waypoints;
     
+    private void EnsureWaypoints()
+    {
+        if (waypoints == null || waypoints.Length == 0)
+        {
+            if (PathManager.Instance != null)
+            {
+                waypoints = PathManager.Instance.Waypoints;
+            }
+        }
+    }
+
     void Start()
     {
-        waypoints = PathManager.Instance.Waypoints;
-        transform.position = waypoints[0].position;
+        EnsureWaypoints();
+        if (waypoints != null && waypoints.Length > 0)
+        {
+            transform.position = waypoints[0].position;
+        }
     }
     
     void Update()
     {
-        if (waypointIndex >= waypoints.Length)
+        EnsureWaypoints();
+        if (waypoints == null || waypoints.Length == 0 || waypointIndex >= waypoints.Length)
         {
-            ReachedBase();
+            if (waypoints != null && waypointIndex >= waypoints.Length)
+            {
+                ReachedBase();
+            }
             return;
         }
 
         Transform target = waypoints[waypointIndex];
-        // move toward the current waypoint
+// move toward the current waypoint
         transform.position = Vector3.MoveTowards(
         transform.position,
         target.position,
@@ -47,7 +65,7 @@ public class EnemyPathFollower : MonoBehaviour
 
     void ReachedBase()
     {
-        AudioSource.PlayClipAtPoint(baseSFX, transform.position);
+        if (baseSFX != null) AudioSource.PlayClipAtPoint(baseSFX, transform.position);
         GameManager.Instance.LoseLives(livesLost);
         EnemyManager.Instance.RemoveEnemy(GetComponent<EnemyHealth>());
         
@@ -56,12 +74,23 @@ public class EnemyPathFollower : MonoBehaviour
             WaveManager.Instance.OnEnemyRemoved();
         }
         
-        Destroy(gameObject, 2f); // delay 2 seconds so it can show it walking into the tunnel
+        if (EnemyPool.Instance != null)
+        {
+            EnemyPool.Instance.Return(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
  
     public void ResetPath()
     {
+        EnsureWaypoints();
         waypointIndex = 0;
-        transform.position = waypoints[0].position;
+        if (waypoints != null && waypoints.Length > 0)
+        {
+            transform.position = waypoints[0].position;
+        }
     }
 }

@@ -43,12 +43,20 @@ public class EnemyHealth : MonoBehaviour
     
     void Die()
     {
-        Instantiate(deathParticle, transform.position, transform.rotation);
+        if (deathParticle != null) Instantiate(deathParticle, transform.position, transform.rotation);
         
-        AudioSource.PlayClipAtPoint(deathSFX, transform.position);
+        if (deathSFX != null) AudioSource.PlayClipAtPoint(deathSFX, transform.position);
         GameManager.Instance.AddGold(goldReward);
         EnemyManager.Instance.RemoveEnemy(this);
         WaveManager.Instance.OnEnemyRemoved();
-        gameObject.SetActive(false);
+        
+        if (EnemyPool.Instance != null)
+        {
+            EnemyPool.Instance.Return(gameObject);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

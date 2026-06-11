@@ -37,17 +37,13 @@ public class TileBehavior : MonoBehaviour
 
     void OnMouseDown()
     {
-        // If TowerPlacer has a tower selected, it will handle placement in its own Update.
-        // We return here to avoid double-instantiation.
         if (TowerPlacer.Instance != null && TowerPlacer.Instance.selectedData != null)
         {
             return;
         }
 
-        if (!tileOccupied && towerPrefab != null)
-        {
-            PlaceTower(towerPrefab);
-        }
+        // The old fallback logic was causing 'random' towers to be placed when selection was null.
+        // removed to ensure all building goes through the selection system.
     }
 
     public void PlaceTower(GameObject prefab)
