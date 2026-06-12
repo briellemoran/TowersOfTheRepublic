@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class UIManager : MonoBehaviour
     [Header("Panels")]
     public GameObject gameOverPanel;
     public GameObject winPanel;
+    public Button nextLevelButton;
 
     private void OnEnable()
     {
@@ -92,5 +94,16 @@ public class UIManager : MonoBehaviour
     public void ShowWin()
     {
         winPanel.SetActive(true);
+
+        // don't show the next level button if level 2 is won
+        if (SceneManager.GetActiveScene().name == "LevelTwo")
+        {
+            nextLevelButton.gameObject.SetActive(false);
+        }
+    }
+
+    public void LoadNextLevel()
+    {
+        SceneManager.LoadScene("LevelTwo");
     }
 }

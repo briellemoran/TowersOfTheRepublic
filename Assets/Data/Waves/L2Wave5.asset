@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e118398b030844c4db857bc1da4ac6e6, type: 3}
-  m_Name: Wave2Data
+  m_Name: L2Wave5
   m_EditorClassIdentifier: Assembly-CSharp::WaveData
   entries:
   - enemyPrefab: {fileID: 7149933235990240529, guid: b528f80db1f1745969f60b321ca270b7, type: 3}
-    count: 8
-    spawnInterval: 1.2
+    count: 15
+    spawnInterval: 0.8
   delayBeforeWave: 3
