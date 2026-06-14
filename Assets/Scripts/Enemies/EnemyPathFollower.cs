@@ -1,65 +1,45 @@
 using UnityEngine;
+using UnityEngine.AI;
+
 public class EnemyPathFollower : MonoBehaviour
 {
     public AudioClip baseSFX;
     public float speed = 3.5f;
     public int livesLost = 1;
-    public int waypointIndex = 0;
     
-    private Transform[] waypoints;
-    
-    private void EnsureWaypoints()
-    {
-        if (waypoints == null || waypoints.Length == 0)
-        {
-            if (PathManager.Instance != null)
-            {
-                waypoints = PathManager.Instance.Waypoints;
-            }
-        }
-    }
+    private NavMeshAgent agent;
+    private Transform targetBase;
 
     void Start()
     {
-        EnsureWaypoints();
-        if (waypoints != null && waypoints.Length > 0)
+        agent = GetComponent<NavMeshAgent>();
+        if (agent == null)
         {
-            transform.position = waypoints[0].position;
+            agent = gameObject.AddComponent<NavMeshAgent>();
+        }
+
+        GameObject targetObj = GameObject.FindGameObjectWithTag("Target");
+        if (targetObj != null)
+        {
+            targetBase = targetObj.transform;
+            agent.SetDestination(targetBase.position);
+        }
+        else
+        {
+            Debug.LogWarning("Target base not found by tag 'Target'!");
         }
     }
     
     void Update()
     {
-        EnsureWaypoints();
-        if (waypoints == null || waypoints.Length == 0 || waypointIndex >= waypoints.Length)
+        if (agent == null || targetBase == null) return;
+
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.1f)
         {
-            if (waypoints != null && waypointIndex >= waypoints.Length)
+            if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
             {
                 ReachedBase();
             }
-            return;
-        }
-
-        Transform target = waypoints[waypointIndex];
-// move toward the current waypoint
-        transform.position = Vector3.MoveTowards(
-        transform.position,
-        target.position,
-        speed * Time.deltaTime
-        );
-
-        // rotate to face direction of travel
-        Vector3 dir = target.position - transform.position;
-        if (dir != Vector3.zero)
-        transform.rotation = Quaternion.Slerp(
-        transform.rotation,
-        Quaternion.LookRotation(dir),
-        10f * Time.deltaTime
-        );
-
-        // go to the next waypoint when close enough
-        if (Vector3.Distance(transform.position, target.position) < 0.15f){
-            waypointIndex++;
         }
     }
 
@@ -86,11 +66,10 @@ public class EnemyPathFollower : MonoBehaviour
  
     public void ResetPath()
     {
-        EnsureWaypoints();
-        waypointIndex = 0;
-        if (waypoints != null && waypoints.Length > 0)
+        if (agent != null && targetBase != null)
         {
-            transform.position = waypoints[0].position;
+            agent.Warp(transform.position); // Ensure agent is on NavMesh
+            agent.SetDestination(targetBase.position);
         }
     }
 }

@@ -41,7 +41,7 @@ public class EnemyManager : MonoBehaviour
     public EnemyHealth GetFirst()
     {
         EnemyHealth first = null;
-        int bestIdx = -1;
+        float bestDist = float.MaxValue;
 
         foreach (EnemyHealth e in activeEnemies)
         {
@@ -49,11 +49,12 @@ public class EnemyManager : MonoBehaviour
                 continue;
             }
 
-            int idx = e.GetComponent<EnemyPathFollower>().waypointIndex;
+            UnityEngine.AI.NavMeshAgent agent = e.GetComponent<UnityEngine.AI.NavMeshAgent>();
+            float dist = agent != null && !agent.pathPending ? agent.remainingDistance : float.MaxValue;
             
-            if (idx > bestIdx) 
+            if (dist < bestDist) 
             { 
-                bestIdx = idx; first = e; 
+                bestDist = dist; first = e; 
             }
         }
         return first;
