@@ -113,7 +113,7 @@ public class TowerPlacer : MonoBehaviour
 
     bool IsPlacementValid(Vector3 position)
     {
-        // 1. Check if near an unoccupied BuildZone
+        // Check if near an unoccupied BuildZone
         Collider[] zones = Physics.OverlapSphere(position, 4.0f, buildZoneLayer);
         currentBuildZone = null;
 
@@ -129,10 +129,10 @@ public class TowerPlacer : MonoBehaviour
 
         if (currentBuildZone == null) return false;
 
-        // 2. Check if on path
+        // Check if on path
         if (Physics.CheckSphere(position, 0.05f, pathLayer)) return false;
 
-        // 3. Check for overlapping towers
+        // Check for overlapping towers
         Collider[] overlaps = Physics.OverlapSphere(position, 0.5f);
         foreach (var col in overlaps)
         {

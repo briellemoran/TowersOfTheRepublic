@@ -10,14 +10,17 @@ public class EnemyPathFollower : MonoBehaviour
     private NavMeshAgent agent;
     private Transform targetBase;
 
-    void Start()
+    void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         if (agent == null)
         {
             agent = gameObject.AddComponent<NavMeshAgent>();
         }
+    }
 
+    void Start()
+    {
         GameObject targetObj = GameObject.FindGameObjectWithTag("Target");
         if (targetObj != null)
         {
@@ -29,7 +32,7 @@ public class EnemyPathFollower : MonoBehaviour
             Debug.LogWarning("Target base not found by tag 'Target'!");
         }
     }
-    
+
     void Update()
     {
         if (agent == null || targetBase == null) return;
@@ -63,9 +66,35 @@ public class EnemyPathFollower : MonoBehaviour
             Destroy(gameObject);
         }
     }
- 
+
+    void OnDisable()
+    {
+        if (agent != null && agent.isOnNavMesh)
+        {
+            agent.isStopped = true;
+        }
+    }
+
+    void OnEnable()
+    {
+        if (agent != null && agent.isOnNavMesh)
+        {
+            agent.isStopped = false;
+        }
+    }
+
     public void ResetPath()
     {
+        // Re-find target if it was missed during instantiation (e.g. tag was missing)
+        if (targetBase == null)
+        {
+            GameObject targetObj = GameObject.FindGameObjectWithTag("Target");
+            if (targetObj != null)
+            {
+                targetBase = targetObj.transform;
+            }
+        }
+
         if (agent != null && targetBase != null)
         {
             agent.Warp(transform.position); // Ensure agent is on NavMesh
