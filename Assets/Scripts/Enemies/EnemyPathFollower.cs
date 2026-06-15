@@ -95,7 +95,7 @@ public class EnemyPathFollower : MonoBehaviour
             }
         }
 
-        if (agent != null && targetBase != null)
+        if (agent != null && agent.isOnNavMesh && targetBase != null) // also added check if the navmesh is baked
         {
             agent.Warp(transform.position); // Ensure agent is on NavMesh
             agent.SetDestination(targetBase.position);
