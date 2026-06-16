@@ -48,4 +48,12 @@ public class DroidAnimationController : MonoBehaviour
         animator.SetFloat("Speed", currentSpeed);
         animator.SetBool("Attacking", isAttacking);
     }
+
+    // the droid shrinks when it dies
+    public void TriggerDeath()
+    {
+        if(animator != null){
+            animator.SetTrigger("Die");
+        }
+    }
 }

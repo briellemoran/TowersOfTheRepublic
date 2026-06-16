@@ -14,6 +14,11 @@ public class CameraController : MonoBehaviour
     public float maxFOV = 90f;
     public float zoomSmoothness = 10f;
 
+    [Header("Pan Settings")]
+    public float panSpeed = 20f;
+    public Vector2 panLimitX = new Vector2(-8, 8);
+    public Vector2 panLimitZ = new Vector2(-8, 8);
+
     private float currentYaw;
     private float currentPitch;
     private float targetFOV;
@@ -44,6 +49,7 @@ public class CameraController : MonoBehaviour
     {
         HandleRotation();
         HandleZoom();
+        HandlePan();
     }
 
     private void HandleRotation()
@@ -109,5 +115,33 @@ public class CameraController : MonoBehaviour
         {
             cam.fieldOfView = targetFOV;
         }
+    }
+
+    // can move around the area with WASD but with clamp
+    private void HandlePan()
+    {
+        Vector3 pos = transform.position;
+        
+        if (Input.GetKey("w"))
+        {
+            pos.z += panSpeed * Time.deltaTime;
+        }
+        if (Input.GetKey("s"))
+        {
+            pos.z -= panSpeed * Time.deltaTime;
+        }
+        if (Input.GetKey("d"))
+        {
+            pos.x += panSpeed * Time.deltaTime;
+        }
+        if (Input.GetKey("a"))
+        {
+            pos.x -= panSpeed * Time.deltaTime;
+        }
+
+        pos.x = Mathf.Clamp(pos.x, panLimitX.x, panLimitX.y);
+        pos.z = Mathf.Clamp(pos.z, panLimitZ.x, panLimitZ.y);
+
+        transform.position = pos;
     }
 }

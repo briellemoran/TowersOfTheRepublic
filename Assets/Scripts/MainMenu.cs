@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class MainMenu : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class MainMenu : MonoBehaviour
     public TMP_Text totalTimePlayedText;
     public Slider musicVolumeSlider;
     public TMP_Text creditsText;
+    public Button startButton;
+    public TMP_Text startButtonText;
 
     [Header("Team Credits")]
     [TextArea]
@@ -22,7 +25,30 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
-       
+        if (SceneManager.sceneCount == 1)
+        {
+            PlayerPrefs.DeleteKey("LastLevel");
+        }
+
+        string lastLevel = PlayerPrefs.GetString("LastLevel", "");
+
+        if (lastLevel != "" && startButtonText != null)
+        {
+            startButtonText.text = "CONTINUE";
+        }
+        else if (startButtonText != null)
+        {
+            startButtonText.text = "START GAME";
+        }
+
+        // disable any other audio listeners in other loaded scenes
+        AudioListener[] listeners = FindObjectsByType<AudioListener>(FindObjectsInactive.Include);
+        foreach (AudioListener listener in listeners)
+        {
+            if (listener.gameObject.scene.name != "MainMenu")
+                listener.enabled = false;
+        }
+
         float savedVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
         AudioListener.volume = savedVolume;
         if (musicVolumeSlider != null)
@@ -66,13 +92,37 @@ public class MainMenu : MonoBehaviour
     public void StartGame()
     {
         SaveTime();
-        SceneManager.LoadScene(gameSceneName);
+        Time.timeScale = 1f;
+
+        string lastLevel = PlayerPrefs.GetString("LastLevel", "");
+    
+        AudioListener[] listeners = FindObjectsByType<AudioListener>(FindObjectsInactive.Include);
+        foreach (AudioListener listener in listeners)
+        {
+            listener.enabled = true;
+        }
+
+        if (lastLevel != "" && SceneManager.sceneCount > 1)
+        {
+            EventSystem.current.enabled = true;
+            PlayerPrefs.DeleteKey("LastLevel");
+            SceneManager.UnloadSceneAsync("MainMenu");
+        }
+        else
+        {
+            PlayerPrefs.DeleteKey("LastLevel");
+            SceneManager.LoadScene(gameSceneName);
+        }
     }
 
     public void QuitGame()
     {
         SaveTime();
+        PlayerPrefs.DeleteKey("LastLevel");
+        PlayerPrefs.Save();
         Debug.Log("[MainMenu] Quitting game.");
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("MainMenu");
         Application.Quit();
     }
 

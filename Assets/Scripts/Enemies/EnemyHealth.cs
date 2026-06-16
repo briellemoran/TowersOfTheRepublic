@@ -43,13 +43,27 @@ public class EnemyHealth : MonoBehaviour
     
     void Die()
     {
+        // for the droid animation death
+        DroidAnimationController animController = GetComponentInChildren<DroidAnimationController>();
+        if (animController != null)
+        {
+            animController.TriggerDeath();
+        }
+
         if (deathParticle != null) Instantiate(deathParticle, transform.position, transform.rotation);
         
         if (deathSFX != null) AudioSource.PlayClipAtPoint(deathSFX, transform.position);
+        
         GameManager.Instance.AddGold(goldReward);
         EnemyManager.Instance.RemoveEnemy(this);
         WaveManager.Instance.OnEnemyRemoved();
         
+        // delay the destruction so the animation can run
+        Invoke("ReturnToPool", 1f);
+    }
+
+    void ReturnToPool()
+    {
         if (EnemyPool.Instance != null)
         {
             EnemyPool.Instance.Return(gameObject);
