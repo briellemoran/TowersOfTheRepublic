@@ -21,8 +21,6 @@ public class MainMenu : MonoBehaviour
     [TextArea]
     public string teamMembers = "Dylan Vo and Brielle Moran";
 
-    private float totalTimePlayed;
-
     void Start()
     {
         if (SceneManager.sceneCount == 1)
@@ -41,7 +39,6 @@ public class MainMenu : MonoBehaviour
             startButtonText.text = "START GAME";
         }
 
-        // disable any other audio listeners in other loaded scenes
         AudioListener[] listeners = FindObjectsByType<AudioListener>(FindObjectsInactive.Include);
         foreach (AudioListener listener in listeners)
         {
@@ -54,11 +51,9 @@ public class MainMenu : MonoBehaviour
         if (musicVolumeSlider != null)
         {
             musicVolumeSlider.value = savedVolume;
-            // Keep the slider wired even if not set up in the Inspector.
             musicVolumeSlider.onValueChanged.AddListener(SetMusicVolume);
         }
 
-        totalTimePlayed = PlayerPrefs.GetFloat("TotalTimePlayed", 0f);
         UpdateTimeDisplay();
 
         if (creditsText != null)
@@ -67,35 +62,22 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        // Accumulate time spent this session and keep the display current.
-        totalTimePlayed += Time.deltaTime;
-        UpdateTimeDisplay();
-    }
-
     private void UpdateTimeDisplay()
     {
         if (totalTimePlayedText != null)
         {
-            float minutes = totalTimePlayed / 60f;
+            float totalSeconds = PlayerPrefs.GetFloat("TotalTimePlayed", 0f);
+            float minutes = totalSeconds / 60f;
             totalTimePlayedText.text = "Total Time Played: " + minutes.ToString("F1") + " minutes";
         }
     }
 
-    private void SaveTime()
-    {
-        PlayerPrefs.SetFloat("TotalTimePlayed", totalTimePlayed);
-        PlayerPrefs.Save();
-    }
-
     public void StartGame()
     {
-        SaveTime();
         Time.timeScale = 1f;
 
         string lastLevel = PlayerPrefs.GetString("LastLevel", "");
-    
+
         AudioListener[] listeners = FindObjectsByType<AudioListener>(FindObjectsInactive.Include);
         foreach (AudioListener listener in listeners)
         {
@@ -104,7 +86,11 @@ public class MainMenu : MonoBehaviour
 
         if (lastLevel != "" && SceneManager.sceneCount > 1)
         {
-            EventSystem.current.enabled = true;
+            if (OpenMainMenu.savedLevelEventSystem != null)
+            {
+                OpenMainMenu.savedLevelEventSystem.enabled = true;
+            }
+
             PlayerPrefs.DeleteKey("LastLevel");
             SceneManager.UnloadSceneAsync("MainMenu");
         }
@@ -117,7 +103,6 @@ public class MainMenu : MonoBehaviour
 
     public void QuitGame()
     {
-        SaveTime();
         PlayerPrefs.DeleteKey("LastLevel");
         PlayerPrefs.Save();
         Debug.Log("[MainMenu] Quitting game.");
@@ -131,16 +116,5 @@ public class MainMenu : MonoBehaviour
         AudioListener.volume = volume;
         PlayerPrefs.SetFloat("MusicVolume", volume);
         PlayerPrefs.Save();
-    }
-
-    // Make sure time is saved when the menu is disabled or the app closes.
-    void OnDisable()
-    {
-        SaveTime();
-    }
-
-    void OnApplicationQuit()
-    {
-        SaveTime();
     }
 }

@@ -6,9 +6,12 @@ public class EnemyPathFollower : MonoBehaviour
     public AudioClip baseSFX;
     public float speed = 3.5f;
     public int livesLost = 1;
-    
+
     private NavMeshAgent agent;
     private Transform targetBase;
+
+    // prevents ReachedBase() from firing more than once per enemy
+    private bool hasReachedBase = false;
 
     void Awake()
     {
@@ -35,7 +38,7 @@ public class EnemyPathFollower : MonoBehaviour
 
     void Update()
     {
-        if (agent == null || targetBase == null) return;
+        if (hasReachedBase || agent == null || targetBase == null) return;
 
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.1f)
         {
@@ -48,15 +51,18 @@ public class EnemyPathFollower : MonoBehaviour
 
     void ReachedBase()
     {
+        if (hasReachedBase) return;
+        hasReachedBase = true;
+
         if (baseSFX != null) AudioSource.PlayClipAtPoint(baseSFX, transform.position);
         GameManager.Instance.LoseLives(livesLost);
         EnemyManager.Instance.RemoveEnemy(GetComponent<EnemyHealth>());
-        
+
         if (WaveManager.Instance != null)
         {
             WaveManager.Instance.OnEnemyRemoved();
         }
-        
+
         if (EnemyPool.Instance != null)
         {
             EnemyPool.Instance.Return(gameObject);
@@ -85,7 +91,9 @@ public class EnemyPathFollower : MonoBehaviour
 
     public void ResetPath()
     {
-        // Re-find target if it was missed during instantiation (e.g. tag was missing)
+        hasReachedBase = false;
+
+        // re-find the target if it was missed during instantiation
         if (targetBase == null)
         {
             GameObject targetObj = GameObject.FindGameObjectWithTag("Target");
@@ -95,9 +103,9 @@ public class EnemyPathFollower : MonoBehaviour
             }
         }
 
-        if (agent != null && agent.isOnNavMesh && targetBase != null) // also added check if the navmesh is baked
+        if (agent != null && agent.isOnNavMesh && targetBase != null)
         {
-            agent.Warp(transform.position); // Ensure agent is on NavMesh
+            agent.Warp(transform.position);
             agent.SetDestination(targetBase.position);
         }
     }

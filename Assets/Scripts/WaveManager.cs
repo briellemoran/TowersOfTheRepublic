@@ -12,7 +12,7 @@ public class WaveManager : MonoBehaviour
     public int currentWave = 0;
     public bool waveActive = false;
 
-    // Events for UI (beginner friendly use of Actions)
+    // Events for UI
     public static event Action<int> OnWaveStarted;
     public static event Action OnWaveComplete;
     public static event Action OnAllWavesComplete;
@@ -42,7 +42,7 @@ public class WaveManager : MonoBehaviour
     }
 
     public void StartNextWave()
-{
+    {
         if (waveActive == true) return;
 
         if (currentWave >= waves.Length)
@@ -117,7 +117,7 @@ public class WaveManager : MonoBehaviour
         Debug.Log("Enemy Removed. Enemies remaining in wave: " + enemiesRemainingInWave);
 
         if (enemiesRemainingInWave <= 0 && isSpawning == false)
-{
+        {
             waveActive = false;
             
             // Fire UI event

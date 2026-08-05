@@ -15,9 +15,9 @@ public class EnemyPool : MonoBehaviour
         // create all enemies disabled
         for (int i = 0; i < poolSize; i++)
         {
-        GameObject obj = Instantiate(enemyPrefab);
-        obj.SetActive(false);
-        pool.Enqueue(obj);
+            GameObject obj = Instantiate(enemyPrefab);
+            obj.SetActive(false);
+            pool.Enqueue(obj);
         }
     }
 

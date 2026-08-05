@@ -3934,10 +3934,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
   rotationSpeed: 200
-  minPitch: -80
-  maxPitch: 80
+  minPitch: -60
+  maxPitch: 60
   zoomSensitivity: 5
-  minFOV: 20
+  minFOV: 10
   maxFOV: 70
   zoomSmoothness: 10
   panSpeed: 20
@@ -18259,6 +18259,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   gold: 1000
   lives: 20
+  debugLogLifeLoss: 0
 --- !u!4 &1740780013
 Transform:
   m_ObjectHideFlags: 0
